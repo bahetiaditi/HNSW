@@ -238,15 +238,14 @@ def compute_ground_truth(
         dots = batch_queries @ matching_vectors.T  # (batch, n_match)
         dists = q_norms + v_norms - 2 * dots  # (batch, n_match)
 
-        # For each query, find indices of k smallest distances
-        # argpartition is O(n) vs O(n log n) for full sort
-        top_k_local = np.argpartition(dists, k, axis=1)[:, :k]
-
-        # Sort the top-k by actual distance for consistent ordering
-        for i in range(end - start):
-            local_ids = top_k_local[i]
-            sorted_order = np.argsort(dists[i, local_ids])
-            top_k_local[i] = local_ids[sorted_order]
+        if n_match == k:
+            top_k_local = np.argsort(dists, axis=1)[:, :k]
+        else:
+            top_k_local = np.argpartition(dists, k, axis=1)[:, :k]
+            for i in range(end - start):
+                local_ids = top_k_local[i]
+                sorted_order = np.argsort(dists[i, local_ids])
+                top_k_local[i] = local_ids[sorted_order]
 
         # Map local indices back to global vector IDs
         ground_truth[start:end] = matching_ids[top_k_local]
