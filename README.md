@@ -829,9 +829,8 @@ Our metadata distribution is fixed at build time: category 0 always has exactly 
 
 ---
 
-## 17. Interview Talking Points
+## 17. Talking Points
 
-This section organizes the key concepts from this project into interview-ready narratives.
 
 ### 17.1 "Walk me through HNSW."
 
